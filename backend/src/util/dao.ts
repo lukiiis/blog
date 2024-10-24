@@ -1,7 +1,7 @@
 // dao.ts
 import { ObjectId } from 'mongodb';
 
-export type UserDao = {
+export interface UserDao {
     _id: ObjectId;
     username: string;
     email: string;
@@ -12,29 +12,29 @@ export type UserDao = {
     updatedAt: Date;
     isAdmin: boolean;
     isActive: boolean;
-};
+}
 
-export type PostDao = {
+export interface PostDao {
     _id: ObjectId;
-    authorId: ObjectId; // Reference to User (_id)
+    authorId: ObjectId;
     title: string;
     content: string;
     category: string;
     createdAt: Date;
     updatedAt: Date;
-};
+}
 
-export type CommentDao = {
+export interface CommentDao {
     _id: ObjectId;
-    postId: ObjectId; // Reference to Post (_id)
-    authorId: ObjectId; // Reference to User (_id)
+    postId: ObjectId;
+    authorId: ObjectId;
     content: string;
     createdAt: Date;
-};
+}
 
-export type LikeDao = {
+export interface LikeDao {
     _id: ObjectId;
-    postId: ObjectId; // Reference to Post (_id)
-    userId: ObjectId; // Reference to User (_id)
+    postId: ObjectId;
+    userId: ObjectId;
     createdAt: Date;
-};
+}
