@@ -1,7 +1,7 @@
 // dtos.ts
 
 export interface UserDto {
-    _id: string;
+    id: string;
     username: string;
     email: string;
     passwordHash: string;
@@ -14,7 +14,7 @@ export interface UserDto {
 }
 
 export interface PostDto {
-    _id: string;
+    id: string;
     authorId: UserDto;
     title: string;
     content: string;
@@ -37,7 +37,7 @@ export interface PostFullDto extends PostDto {
 }
 
 export interface CommentDto {
-    _id: string;
+    id: string;
     postId: string;
     authorId: string;
     content: string;
@@ -45,7 +45,7 @@ export interface CommentDto {
 }
 
 export interface CommentFullDto {
-    _id: string;
+    id: string;
     postId: PostDto;
     authorId: UserDto;
     content: string;
@@ -53,7 +53,7 @@ export interface CommentFullDto {
 }
 
 export interface LikeDto {
-    _id: string;
+    id: string;
     postId: string;
     userId: string;
     createdAt: Date;
