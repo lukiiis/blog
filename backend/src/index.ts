@@ -1,21 +1,32 @@
-import app from "./app"
-import dotenv from "dotenv";
+import app from "./app";
+import "./loadEnvironment";
+import { connectToDatabase } from './db/connection';
 
-dotenv.config();
 const port = process.env.PORT || 8080;
 
-const server = app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+async function startServer() {
+  try {
+    await connectToDatabase();
 
-const onCloseSignal = () => {
-  console.log("sigint received, shutting down");
-  server.close(() => {
-    console.log("server closed");
-    process.exit();
-  });
-  setTimeout(() => process.exit(1), 10000).unref(); // Force shutdown after 10s
-};
+    const server = app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
 
-process.on("SIGINT", onCloseSignal);
-process.on("SIGTERM", onCloseSignal);
+    const onCloseSignal = () => {
+      console.log("SIGINT received, shutting down");
+      server.close(() => {
+        console.log("Server closed");
+        process.exit();
+      });
+      setTimeout(() => process.exit(1), 10000).unref();
+    };
+
+    process.on("SIGINT", onCloseSignal);
+    process.on("SIGTERM", onCloseSignal);
+  } catch (err) {
+    console.error("Failed to start the server due to database connection error:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
