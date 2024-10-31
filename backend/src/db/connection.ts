@@ -1,25 +1,28 @@
-import { MongoClient, Db } from "mongodb";
-import "../loadEnvironment";
+import { Db, MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
-const connectionString = process.env.ATLAS_URI || "";
-const client = new MongoClient(connectionString);
+dotenv.config();
+const CONNECTION_URI: string = process.env.ATLAS_URI || "";
+const DATABASE_NAME: string = "Blobiboks"
 
-let db: Db | null = null;
-//to się przeniesię gdzies 
-let databaseName = 'blobiboks';
+export let client: MongoClient;
+export let db: Db;
 
-export async function connectToDatabase(): Promise<Db> {
-  if (!db) {
-    try {
-      // Nawiązanie połączenia
-      await client.connect();
-      console.log('Connected to MongoDB');
-      db = client.db(databaseName);
-    } catch (e) {
-      console.error('Failed to connect to MongoDB', e);
-      throw e; // Wyjątek, jeśli nie uda się połączyć
-    }
+export async function connectToDatabase() {
+  try {
+    client = new MongoClient(CONNECTION_URI);
+    await client.connect();
+    db = client.db(DATABASE_NAME);
+    console.log("successfully connected to MongoDB");
+  } catch (e) {
+    console.error("Failed to connect to MongoDB", e);
+    throw e;
   }
+}
 
-  return db; // Zwracamy istniejące połączenie (singleton)
+export async function closeDatabaseConnection() {
+  if (client) {
+    await client.close();
+    console.log("MongoDB connection closed");
+  }
 }

@@ -1,7 +1,7 @@
 // dao.ts
 import { ObjectId } from 'mongodb';
 
-export interface UserDao {
+export interface User {
     _id: ObjectId;
     username: string;
     email: string;
@@ -14,7 +14,7 @@ export interface UserDao {
     isActive: boolean;
 }
 
-export interface PostDao {
+export interface Post {
     _id: ObjectId;
     authorId: ObjectId;
     title: string;
@@ -24,7 +24,7 @@ export interface PostDao {
     updatedAt: Date;
 }
 
-export interface CommentDao {
+export interface Comment {
     _id: ObjectId;
     postId: ObjectId;
     authorId: ObjectId;
@@ -32,7 +32,7 @@ export interface CommentDao {
     createdAt: Date;
 }
 
-export interface LikeDao {
+export interface Like {
     _id: ObjectId;
     postId: ObjectId;
     userId: ObjectId;
