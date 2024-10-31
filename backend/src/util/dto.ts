@@ -60,7 +60,7 @@ export interface LikeDto {
 }
 
 export interface LikeFullDto {
-    _id: string;
+    id: string;
     postId: PostDto;
     userId: UserDto;
     createdAt: Date;
