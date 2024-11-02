@@ -1,21 +1,20 @@
 // dtos.ts
+import { ObjectId } from 'mongodb';
 
 export interface UserDto {
-    id: string;
+    id: ObjectId;
     username: string;
     email: string;
-    passwordHash: string;
     bio?: string;
     profilePicture?: string;
     createdAt: Date;
-    updatedAt: Date;
     isAdmin: boolean;
     isActive: boolean;
 }
 
 export interface PostDto {
-    id: string;
-    authorId: UserDto;
+    id: ObjectId;
+    authorId: ObjectId;
     title: string;
     content: string;
     category: string;
@@ -37,31 +36,29 @@ export interface PostFullDto extends PostDto {
 }
 
 export interface CommentDto {
-    id: string;
-    postId: string;
-    authorId: string;
+    id: ObjectId;
+    postId: ObjectId;
+    authorId: ObjectId;
     content: string;
     createdAt: Date;
 }
 
 export interface CommentFullDto {
     id: string;
-    postId: PostDto;
-    authorId: UserDto;
+    post: PostDto;
+    author: UserDto;
     content: string;
     createdAt: Date;
 }
 
 export interface LikeDto {
-    id: string;
-    postId: string;
-    userId: string;
-    createdAt: Date;
+    id: ObjectId;
+    postId: ObjectId;
+    userId: ObjectId;
 }
 
 export interface LikeFullDto {
-    id: string;
-    postId: PostDto;
-    userId: UserDto;
-    createdAt: Date;
+    id: ObjectId;
+    postId: string;
+    userId: string;
 }

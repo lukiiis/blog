@@ -5,7 +5,6 @@ export interface User {
     _id: ObjectId;
     username: string;
     email: string;
-    passwordHash: string;
     bio?: string;
     profilePicture?: string;
     createdAt: Date;

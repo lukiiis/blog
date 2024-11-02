@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { getAllUsers, getUserById } from "../services/userService";
+import { ObjectId } from 'mongodb';
 
 const router = Router();
 
@@ -12,11 +13,11 @@ router.get("/users", async (req, res) => {
   }
 })
 
-router.get("/user/:id", async (req: Request, res: Response) => {
+router.get("/user/:id", async (req, res) => {
   const userId = req.params.id;
   
   try {
-    const user = await getUserById(userId);
+    const user = await getUserById(new ObjectId(userId));
     if (user) {
       res.json(user);
     } else {
