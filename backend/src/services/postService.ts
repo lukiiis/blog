@@ -40,7 +40,7 @@ export async function createPostService(postData: Omit<PostDto, 'id'>): Promise<
 
     const newPost: Post = {
       _id: new ObjectId(), 
-      authorId: new ObjectId(postData.authorId), 
+      authorId: postData.authorId, 
       title: postData.title || "",
       content: postData.content || "",
       category: postData.category || "",
@@ -73,7 +73,7 @@ export async function updatePostService(postId: ObjectId, updateData: Partial<Po
     }
 
     const result = await db.collection<Post>("Post").findOneAndUpdate(
-      { _id: new ObjectId(postId) },
+      { _id: postId },
       { $set: updateFields },
       { returnDocument: "after" }
     );
