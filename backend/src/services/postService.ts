@@ -20,7 +20,7 @@ export async function getPostsByAuthorId(authorId: ObjectId): Promise<PostDto[]>
       throw new Error("Invalid author ID format");
     }
 
-    const posts = await db.collection<Post>("Post").find({ authorId: new ObjectId(authorId) }).toArray();
+    const posts = await db.collection<Post>("Post").find({ authorId: authorId }).toArray();
 
     return posts.map(mapPostToDto);
   } catch (error) {

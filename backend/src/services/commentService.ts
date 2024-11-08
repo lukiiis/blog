@@ -21,7 +21,7 @@ export async function getCommentsByAuthorId(authorId: ObjectId): Promise<Comment
       throw new Error("Invalid author ID format");
     }
 
-    const comments = await db.collection<Comment>("Comment").find({ authorId: new ObjectId(authorId) }).toArray();
+    const comments = await db.collection<Comment>("Comment").find({ authorId: authorId }).toArray();
     return comments.map(mapCommentToDto);
   } catch (error) {
     console.error("Error fetching comments by author ID:", error);
@@ -35,7 +35,7 @@ export async function getCommentsByPostId(postId: ObjectId): Promise<CommentDto[
         throw new Error("Invalid post ID format");
       }
   
-      const comments = await db.collection<Comment>("Comment").find({ postId: new ObjectId(postId) }).toArray();
+      const comments = await db.collection<Comment>("Comment").find({ postId: postId }).toArray();
       return comments.map(mapCommentToDto);
     } catch (error) {
       console.error("Error fetching comments by post ID:", error);
@@ -49,7 +49,7 @@ export async function getCommentById(commentId: ObjectId): Promise<CommentDto | 
       throw new Error("Invalid comment ID format");
     }
 
-    const comment = await db.collection<Comment>("Comment").findOne({ _id: new ObjectId(commentId) });
+    const comment = await db.collection<Comment>("Comment").findOne({ _id: commentId });
     return comment ? mapCommentToDto(comment) : null;
   } catch (error) {
     console.error("Error fetching comment by ID:", error);
@@ -65,8 +65,8 @@ export async function createCommentService(commentData: Omit<CommentDto, 'id'>):
 
     const newComment: Comment = {
       _id: new ObjectId(),
-      authorId: new ObjectId(commentData.authorId),
-      postId: new ObjectId(commentData.postId),
+      authorId: commentData.authorId,
+      postId: commentData.postId,
       content: commentData.content || "",
       createdAt: new Date(),
     };
@@ -88,7 +88,7 @@ export async function updateCommentService(commentId: ObjectId, updateData: Part
     const updateFields: Partial<Comment> = { ...updateData };
 
     const result = await db.collection<Comment>("Comment").findOneAndUpdate(
-      { _id: new ObjectId(commentId) },
+      { _id: commentId },
       { $set: updateFields },
       { returnDocument: "after" }
     );
@@ -107,7 +107,7 @@ export async function deleteCommentService(commentId: ObjectId): Promise<boolean
       throw new Error("Invalid comment ID format");
     }
 
-    const result = await db.collection<Comment>("Comment").deleteOne({ _id: new ObjectId(commentId) });
+    const result = await db.collection<Comment>("Comment").deleteOne({ _id: commentId });
     return result.deletedCount === 1;
   } catch (error) {
     console.error("Error deleting comment:", error);
