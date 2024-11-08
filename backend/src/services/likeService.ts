@@ -9,8 +9,8 @@ export async function createLikeService(likeData: Omit<LikeDto, 'id'>): Promise<
     try {
         const newLike: Like = {
             _id: new ObjectId(),
-            postId: new ObjectId(likeData.postId),
-            userId: new ObjectId(likeData.userId),
+            postId: likeData.postId,
+            userId: likeData.userId,
             createdAt: new Date(),
         };
 
