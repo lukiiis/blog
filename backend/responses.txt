@@ -1,0 +1,385 @@
+# 8.11.2024
+
+---------------------- posts --------------------
+GET /posts
+Success (200)
+[
+  {
+      "id": "615d1f76f9c2b87a9b0b9b1a",
+      "authorId": "615d1f76f9c2b87a9b0b9b1b",
+      "title": "Sample Post",
+      "content": "This is a sample post content.",
+      "category": "Fitness",
+      "createdAt": "2024-11-08T14:33:45.112Z",
+      "updatedAt": "2024-11-08T14:33:45.112Z"
+  }
+]
+Error (500)
+{
+  "message": "Error retrieving posts",
+  "error": "Database connection error"
+}
+
+
+GET /posts/:id
+Success (200)
+{
+  "id": "615d1f76f9c2b87a9b0b9b1a",
+  "authorId": "615d1f76f9c2b87a9b0b9b1b",
+  "title": "Sample Post",
+  "content": "This is a sample post content.",
+  "category": "Fitness",
+  "createdAt": "2024-11-08T14:33:45.112Z",
+  "updatedAt": "2024-11-08T14:33:45.112Z"
+}
+Not Found (404)
+{
+  "message": "Post not found"
+}
+Error (500)
+{
+  "message": "Error retrieving post",
+  "error": "Invalid post ID format"
+}
+
+
+POST /posts
+Success (201)
+{
+  "id": "615d1f76f9c2b87a9b0b9b1a",
+  "authorId": "615d1f76f9c2b87a9b0b9b1b",
+  "title": "New Post",
+  "content": "Content of the new post",
+  "category": "Nutrition",
+  "createdAt": "2024-11-08T15:00:00.000Z",
+  "updatedAt": "2024-11-08T15:00:00.000Z"
+}
+Error (500)
+{
+  "message": "Error creating post",
+  "error": "Validation error: Title is required"
+}
+
+
+PUT /posts/:id
+Success (200)
+{
+  "id": "615d1f76f9c2b87a9b0b9b1a",
+  "authorId": "615d1f76f9c2b87a9b0b9b1b",
+  "title": "Updated Post Title",
+  "content": "Updated content",
+  "category": "Exercise",
+  "createdAt": "2024-11-08T14:33:45.112Z",
+  "updatedAt": "2024-11-08T16:00:00.000Z"
+}
+Not Found (404)
+{
+  "message": "Post not found"
+}
+Error (500)
+{
+  "message": "Error updating post",
+  "error": "Invalid data format"
+}
+
+
+DELETE /posts/:id
+Success (204)
+
+Not Found (404)
+{
+  "message": "Post not found"
+}
+Error (500)
+{
+  "message": "Error deleting post",
+  "error": "Invalid post ID format"
+}
+
+---------------------- users --------------------
+GET /users
+Response 200
+{
+    "users": [
+        {
+            "id": "64bfc789f05b9f97e0803c8a",
+            "username": "john_doe",
+            "email": "john@example.com",
+            "bio": "Software developer",
+            "profilePicture": "https://example.com/profile.jpg",
+            "createdAt": "2024-10-20T08:20:00.000Z",
+            "isAdmin": false,
+            "isActive": true
+        }
+    ]
+}
+Response 500
+{
+    "message": "Error retrieving users",
+    "error": "Database connection error"
+}
+
+Get /users/:id
+Reposnse 200
+{
+    "user": {
+        "id": "64bfc789f05b9f97e0803c8a",
+        "username": "john_doe",
+        "email": "john@example.com",
+        "bio": "Software developer",
+        "profilePicture": "https://example.com/profile.jpg",
+        "createdAt": "2024-10-20T08:20:00.000Z",
+        "isAdmin": false,
+        "isActive": true
+    }
+}
+404
+{
+    "message": "User not found"
+}
+
+post /users
+Request:
+{
+    "username": "john_doe",
+    "email": "john@example.com",
+    "bio": "Software developer",
+    "profilePicture": "https://example.com/profile.jpg",
+    "isAdmin": false,
+    "isActive": true
+}
+Response 201
+{
+    "message": "User created successfully",
+    "user": {
+        "id": "64bfc789f05b9f97e0803c8a",
+        "username": "john_doe",
+        "email": "john@example.com"
+    }
+}
+
+PUT /users 
+Request
+{
+    "id": "64bfc789f05b9f97e0803c8a",
+    "username": "john_updated",
+    "email": "john_updated@example.com",
+    "bio": "Updated bio",
+    "isAdmin": true,
+    "isActive": true
+}
+Response 200
+{
+    "message": "User updated successfully",
+    "user": {
+        "id": "64bfc789f05b9f97e0803c8a",
+        "username": "john_updated",
+        "email": "john_updated@example.com"
+    }
+}
+
+---------------------- auth --------------------
+POST /login
+Request
+{
+    "email": "john@example.com",
+    "password": "password123"
+}
+Response 200
+{
+    "message": "Login successful",
+    "token": "JWT_TOKEN_STRING",
+    "userId": "64bfc789f05b9f97e0803c8a"
+}
+Response 401
+{
+    "message": "Invalid email or password"
+}
+
+POST /register
+Request
+{
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "password123"
+}
+Response 201
+{
+    "message": "Registration successful",
+    "userId": "64bfc789f05b9f97e0803c8a"
+}
+Response 400
+{
+    "message": "Email is already registered"
+}
+
+---------------------- likes --------------------
+GET /likes/post/:postId
+Success (200)
+[
+  {
+      "id": "615d1f76f9c2b87a9b0b9b1c",
+      "postId": "615d1f76f9c2b87a9b0b9b1a",
+      "userId": "615d1f76f9c2b87a9b0b9b1b"
+  }
+]
+Error (500)
+{
+  "message": "Error retrieving likes by post ID",
+  "error": "Database connection error"
+}
+
+GET /likes/user/:userId
+Success (200)
+[
+  {
+      "id": "615d1f76f9c2b87a9b0b9b1c",
+      "postId": "615d1f76f9c2b87a9b0b9b1a",
+      "userId": "615d1f76f9c2b87a9b0b9b1b"
+  }
+]
+Error (500)
+{
+  "message": "Error retrieving likes by user ID",
+  "error": "Database connection error"
+}
+
+POST /likes
+Success (201)
+{
+  "id": "615d1f76f9c2b87a9b0b9b1c",
+  "postId": "615d1f76f9c2b87a9b0b9b1a",
+  "userId": "615d1f76f9c2b87a9b0b9b1b"
+}
+Error (500)
+{
+  "message": "Error creating like",
+  "error": "Validation error: postId is required"
+}
+
+DELETE /likes/:id
+Success (204)
+
+Not Found (404)
+{
+  "message": "Like not found"
+}
+Error (500)
+{
+  "message": "Error deleting like",
+  "error": "Invalid like ID format"
+}
+
+---------------------- comments --------------------
+GET /comments/author/:authorId 
+Success (200 OK):
+[
+    {
+        "id": "63f5aeed12d8b98714f8b9a2",
+        "postId": "63f5aeed12d8b98714f8b9a3",
+        "authorId": "63f5aeed12d8b98714f8b9a4",
+        "content": "This is a comment content",
+        "createdAt": "2024-10-31T12:00:00Z"
+    },
+    {
+        "id": "63f5aeed12d8b98714f8b9a5",
+        "postId": "63f5aeed12d8b98714f8b9a6",
+        "authorId": "63f5aeed12d8b98714f8b9a4",
+        "content": "Another comment content",
+        "createdAt": "2024-11-01T14:30:00Z"
+    }
+]
+Error (500 Internal Server Error)
+{
+    "message": "Error retrieving comments by author ID",
+    "error": "Description of the error"
+}
+
+GET /comments/post/:postId
+Success (200 OK):
+[
+    {
+        "id": "63f5aeed12d8b98714f8b9a7",
+        "postId": "63f5aeed12d8b98714f8b9a3",
+        "authorId": "63f5aeed12d8b98714f8b9a4",
+        "content": "This is a comment content",
+        "createdAt": "2024-10-31T12:00:00Z"
+    },
+    {
+        "id": "63f5aeed12d8b98714f8b9a8",
+        "postId": "63f5aeed12d8b98714f8b9a3",
+        "authorId": "63f5aeed12d8b98714f8b9a9",
+        "content": "Another comment content",
+        "createdAt": "2024-11-01T14:30:00Z"
+    }
+]
+Error (500 Internal Server Error):
+{
+    "message": "Error retrieving comments by post ID",
+    "error": "Description of the error"
+}
+
+GET /comments/:id
+Success (200 OK):
+{
+    "id": "63f5aeed12d8b98714f8b9a2",
+    "postId": "63f5aeed12d8b98714f8b9a3",
+    "authorId": "63f5aeed12d8b98714f8b9a4",
+    "content": "This is a comment content",
+    "createdAt": "2024-10-31T12:00:00Z"
+}
+Not Found (404 Not Found):
+{
+    "message": "Comment not found"
+}
+Error (500 Internal Server Error):
+{
+    "message": "Error retrieving comment",
+    "error": "Description of the error"
+}
+
+POST /comments
+Success (201 Created):
+{
+    "id": "63f5aeed12d8b98714f8b9b1",
+    "postId": "63f5aeed12d8b98714f8b9a3",
+    "authorId": "63f5aeed12d8b98714f8b9a4",
+    "content": "New comment content",
+    "createdAt": "2024-11-01T14:30:00Z"
+}
+Error (500 Internal Server Error):
+{
+    "message": "Error creating comment",
+    "error": "Description of the error"
+}
+
+PUT /comments/:id
+Success (200 OK):
+{
+    "id": "63f5aeed12d8b98714f8b9a2",
+    "postId": "63f5aeed12d8b98714f8b9a3",
+    "authorId": "63f5aeed12d8b98714f8b9a4",
+    "content": "Updated comment content",
+    "createdAt": "2024-10-31T12:00:00Z"
+}
+Not Found (404 Not Found):
+{
+    "message": "Comment not found"
+}
+Error (500 Internal Server Error):
+{
+    "message": "Error updating comment",
+    "error": "Description of the error"
+}
+
+DELETE /comments/:id
+Success (204 No Content): No body content, the status code.
+Not Found (404 Not Found):
+{
+    "message": "Comment not found"
+}
+Error (500 Internal Server Error):
+{
+    "message": "Error deleting comment",
+    "error": "Description of the error"
+}
