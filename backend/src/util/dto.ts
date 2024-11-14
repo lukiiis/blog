@@ -8,6 +8,7 @@ export interface UserDto {
     bio?: string;
     profilePicture?: string;
     createdAt: Date;
+    updatedAt: Date,
     isAdmin: boolean;
     isActive: boolean;
 }
@@ -61,4 +62,28 @@ export interface LikeFullDto {
     id: ObjectId;
     postId: string;
     userId: string;
+}
+
+export type RegisterRequestDto = {
+    username: string;
+    email: string;
+    password: string;
+    bio?: string;
+    profilePicture?: string;
+}
+
+export type RegisterResponseDto = {
+    message: string;
+    userId: ObjectId;
+}
+
+export type AuthRequestDto = {
+    email: string;
+    password: string;
+}
+
+export type AuthResponseDto = {
+    token: string;
+    message: string;
+    userId: ObjectId;
 }

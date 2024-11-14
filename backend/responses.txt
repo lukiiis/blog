@@ -143,6 +143,7 @@ Request:
 {
     "username": "john_doe",
     "email": "john@example.com",
+    "password": "12345"
     "bio": "Software developer",
     "profilePicture": "https://example.com/profile.jpg",
     "isAdmin": false,
@@ -151,11 +152,6 @@ Request:
 Response 201
 {
     "message": "User created successfully",
-    "user": {
-        "id": "64bfc789f05b9f97e0803c8a",
-        "username": "john_doe",
-        "email": "john@example.com"
-    }
 }
 
 PUT /users 
@@ -174,7 +170,8 @@ Response 200
     "user": {
         "id": "64bfc789f05b9f97e0803c8a",
         "username": "john_updated",
-        "email": "john_updated@example.com"
+        "email": "john_updated@example.com",
+        ...
     }
 }
 

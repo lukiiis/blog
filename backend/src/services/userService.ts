@@ -24,3 +24,27 @@ export async function getUserById(userId: ObjectId): Promise<UserDto | null> {
   }
 }
 
+export async function getUserByEmail(email: string): Promise<UserDto | null> {
+  try {
+    const user = await db.collection<User>("User").findOne({ email: email });
+    return user ? mapUserToDto(user) : null;
+  } catch (error) {
+    console.error("Error fetching user by email:", error);
+    throw error;
+  }
+}
+
+export async function createUser(user: User): Promise<ObjectId> {
+  if (await getUserByEmail(user.email)) {
+    throw new Error("User already exists");
+  }
+  try {
+    console.log(user);
+    await db.collection<User>("User").insertOne(user, { bypassDocumentValidation: true });
+    return user._id ?? null;
+  }
+  catch (error) {
+    console.error("Error creating new user:", error);
+    throw error;
+  }
+}

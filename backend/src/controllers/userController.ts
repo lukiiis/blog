@@ -1,15 +1,16 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { getAllUsers, getUserById } from "../services/userService";
 import { ObjectId } from 'mongodb';
+import { authenticateToken } from "../util/middlewares";
 
 const router = Router();
 
-router.get("/users", async (req, res) => {
+router.get("/users", authenticateToken, async (req, res) => {
   try {
     const users = await getAllUsers();
     res.json(users);
   } catch (error) {
-    res.status(500).json({ message: "Error retrieving users", error });
+    res.status(500).json({ message: "Error retrieving users", error: error });
   }
 })
 
@@ -25,7 +26,7 @@ router.get("/user/:id", async (req, res) => {
     }
   }
   catch (error) {
-    res.status(500).json({ message: "Error retrieving user", error });
+    res.status(500).json({ message: "Error retrieving user", error: error });
   }
 });
 
