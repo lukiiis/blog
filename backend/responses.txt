@@ -119,7 +119,7 @@ Response 500
     "error": "Database connection error"
 }
 
-Get /users/:id
+GET /users/:id
 Reposnse 200
 {
     "user": {
@@ -136,22 +136,6 @@ Reposnse 200
 404
 {
     "message": "User not found"
-}
-
-post /users
-Request:
-{
-    "username": "john_doe",
-    "email": "john@example.com",
-    "password": "12345"
-    "bio": "Software developer",
-    "profilePicture": "https://example.com/profile.jpg",
-    "isAdmin": false,
-    "isActive": true
-}
-Response 201
-{
-    "message": "User created successfully",
 }
 
 PUT /users 
@@ -174,6 +158,9 @@ Response 200
         ...
     }
 }
+
+GET /users/email/:email
+DELETE /users/:id
 
 ---------------------- auth --------------------
 POST /login
@@ -207,7 +194,7 @@ Response 201
 }
 Response 400
 {
-    "message": "Email is already registered"
+    "message": "Account already created"
 }
 
 ---------------------- likes --------------------

@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
   }
   catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: 'Account already created', error: error.message });
+    res.status(500).json({ message: 'Error creating account', error: error.message });
   }
 });
 
