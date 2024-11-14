@@ -48,3 +48,27 @@ export async function createUser(user: User): Promise<ObjectId> {
     throw error;
   }
 }
+
+export async function updateUser(userId: ObjectId, updatedUser: Partial<User>): Promise<UserDto | null> {
+  try {
+    const user = await db.collection<User>("User").findOneAndUpdate(
+      { _id: userId },
+      { $set: updatedUser },
+      { returnDocument: "after" } // Returns the updated document
+    );
+    return user ? mapUserToDto(user) : null;
+  } catch (error) {
+    console.error("Error updating user:", error);
+    throw error;
+  }
+}
+
+export async function deleteUser(userId: ObjectId): Promise<boolean> {
+  try {
+    const result = await db.collection<User>("User").deleteOne({ _id: userId });
+    return result.deletedCount !== 0;
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error;
+  }
+}
