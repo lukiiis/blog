@@ -9,11 +9,10 @@ dotenv.config();
 const secret = process.env.SECRET_KEY;
 
 function generateAccessToken(user: UserDto) {
-  console.log(secret);
   if (!secret) {
     throw new Error("Missing secret key");
   }
-  return jwt.sign(user, secret, { expiresIn: '2d' });
+  return jwt.sign(user, secret, { expiresIn: '1d' }); // 1 day expiration
 }
 
 export async function registerUser(req: RegisterRequestDto) {
@@ -26,7 +25,7 @@ export async function registerUser(req: RegisterRequestDto) {
     profilePicture: req.profilePicture,
     createdAt: new Date(),
     updatedAt: new Date(),
-    isAdmin: false,
+    isAdmin: true,
     isActive: true
   }
   return await createUser(newUser);
@@ -38,7 +37,8 @@ export async function authenticate(req: AuthRequestDto): Promise<AuthResponseDto
     return {
       message: `User authenticated`,
       token: generateAccessToken(user),
-      userId: user.id
+      userId: user.id,
+      isAdmin: user.isAdmin
     };
   }
 }

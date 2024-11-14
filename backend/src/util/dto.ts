@@ -86,4 +86,5 @@ export type AuthResponseDto = {
     token: string;
     message: string;
     userId: ObjectId;
+    isAdmin: boolean;
 }
