@@ -6,9 +6,9 @@ import { createUser, getUserByEmail } from "./userService";
 import { ObjectId } from "mongodb";
 
 dotenv.config();
-const secret = process.env.SECRET_KEY;
 
 function generateAccessToken(user: UserDto) {
+  const secret = process.env.SECRET_KEY;
   if (!secret) {
     throw new Error("Missing secret key");
   }
