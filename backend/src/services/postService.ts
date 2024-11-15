@@ -30,26 +30,24 @@ export async function getPostsByAuthorId(authorId: ObjectId): Promise<PostDto[]>
 }
 
 export async function createPostService(postData: Omit<PostDto, 'id'>): Promise<PostDto> {
+  if (!postData.authorId) {
+    throw new Error("Author ID is required to create a post");
+  }
+  console.log("Post data received:", postData);
+  console.log("Author ID:", postData.authorId);
+  
+  const newPost: Post = {
+    _id: new ObjectId(),
+    authorId: postData.authorId,
+    title: postData.title || "",
+    content: postData.content || "",
+    category: postData.category || "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
   try {
-    console.log("Post data received:", postData);
-    console.log("Author ID:", postData.authorId);
-
-    if (!postData.authorId) {
-      throw new Error("Author ID is required to create a post");
-    }
-
-    const newPost: Post = {
-      _id: new ObjectId(), 
-      authorId: postData.authorId, 
-      title: postData.title || "",
-      content: postData.content || "",
-      category: postData.category || "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
     const result = await db.collection<Post>("Post").insertOne(newPost);
-    
     return mapPostToDto({ 
       ...newPost, 
       _id: result.insertedId 
@@ -61,11 +59,10 @@ export async function createPostService(postData: Omit<PostDto, 'id'>): Promise<
 }
 
 export async function updatePostService(postId: ObjectId, updateData: Partial<PostDto>): Promise<PostDto | null> {
+  if (!ObjectId.isValid(postId)) {
+    throw new Error("Invalid post ID format");
+  }
   try {
-    if (!ObjectId.isValid(postId)) {
-      throw new Error("Invalid post ID format");
-    }
-
     const updateFields: Partial<Post> = { ...updateData, updatedAt: new Date() };
 
     if (updateFields.createdAt && typeof updateFields.createdAt === 'string') {
