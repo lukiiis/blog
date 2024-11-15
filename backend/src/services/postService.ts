@@ -29,6 +29,25 @@ export async function getPostsByAuthorId(authorId: ObjectId): Promise<PostDto[]>
   }
 }
 
+export async function getPostById(postId: ObjectId): Promise<PostDto | null> {
+  try {
+    if (!ObjectId.isValid(postId)) {
+      throw new Error("Invalid post ID format");
+    }
+
+    const post = await db.collection<Post>("Post").findOne({ _id: postId });
+
+    if (!post) {
+      return null; // Return null if post not found
+    }
+
+    return mapPostToDto(post);
+  } catch (error) {
+    console.error("Error fetching post by ID:", error);
+    throw error;
+  }
+}
+
 export async function createPostService(postData: Omit<PostDto, 'id'>): Promise<PostDto> {
   if (!postData.authorId) {
     throw new Error("Author ID is required to create a post");

@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Router, Request, Response } from 'express';
-import {getAllPosts, getPostsByAuthorId, createPostService, updatePostService, deletePostService} from '../services/postService';
+import {getAllPosts, getPostById, getPostsByAuthorId, createPostService, updatePostService, deletePostService} from '../services/postService';
+import { verifyLoggedUser, verifyAdmin } from "../util/middlewares";
 
 const router = Router();
 
@@ -29,7 +30,7 @@ router.get('/posts/:id', async (req, res) => {
 });
 
 
-router.post('/posts', async (req: Request, res: Response) => {
+router.post('/posts', verifyLoggedUser, async (req: Request, res: Response) => {
     try {
         const newPost = await createPostService(req.body);
         res.status(201).json(newPost);
@@ -38,24 +39,47 @@ router.post('/posts', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/posts/:id', async (req: Request, res: Response) => {
+router.put('/posts/:id', verifyLoggedUser, async (req: Request, res: Response) => {
     try {
-        const updatedPost = await updatePostService(new ObjectId(req.params.id), req.body);
-        if (updatedPost) {
-            res.json(updatedPost);
-        } else {
-            res.status(404).json({ message: 'Post not found' });
+        const postId = new ObjectId(req.params.id);
+        const post = await getPostById(postId);
+
+        if(!post) {
+          res.status(404).json({ message: 'Post not found' });
+          return;
         }
+
+        if(post.authorId.toString() !== req.params.authorId) {
+          res.status(401).json({ message: 'Unauthorized' });
+          return;
+        }
+
+        const updatedPost = await updatePostService(new ObjectId(req.params.id), req.body);
+        res.json(updatedPost);
     } catch (error) {
         res.status(500).json({ message: 'Error updating post', error });
     }
 });
 
-router.delete('/posts/:id', async (req: Request, res: Response) => {
+router.delete('/posts/:id',verifyLoggedUser, async (req: Request, res: Response) => {
     try {
+
+        const postId = new ObjectId(req.params.id);
+        const post = await getPostById(postId);
+        
+        if(!post) {
+          res.status(404).json({ message: 'Post not found' });
+          return;
+        }
+
+        if(post.authorId.toString() !== req.params.authorId) {
+          res.status(401).json({ message: 'Unauthorized' });
+          return;
+        }
+
         const deleted = await deletePostService(new ObjectId(req.params.id));
         if (deleted) {
-            res.status(204).send();
+          res.status(204).send();
         } else {
             res.status(404).json({ message: 'Post not found' });
         }
