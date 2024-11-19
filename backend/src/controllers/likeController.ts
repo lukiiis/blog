@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Router, Request, Response } from 'express';
-import {createLikeService, deleteLikeService, getLikesByPostId, getLikesByUserId} from '../services/likeService';
+import {createLikeService, deleteLikeService, getLikesByPostId, getLikesByUserId, getLikeById} from '../services/likeService';
+import { verifyLoggedUser } from '../util/middlewares';
 
 const router = Router();
 
@@ -24,7 +25,7 @@ router.get('/likes/user/:userId', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/likes', async (req: Request, res: Response) => {
+router.post('/likes',verifyLoggedUser, async (req: Request, res: Response) => {
     try {
         const newLike = await createLikeService(req.body);
         res.status(201).json(newLike);
@@ -33,9 +34,21 @@ router.post('/likes', async (req: Request, res: Response) => {
     }
 });
 
-router.delete('/likes/:id', async (req: Request, res: Response) => {
+router.delete('/likes/:id', verifyLoggedUser,  async (req: Request, res: Response) => {
     try {
         const likeId = new ObjectId(req.params.id);
+        const like = await getLikeById(likeId);
+
+        if (!like) {
+          res.status(404).json({ message: 'Like not found' });
+          return
+        }
+
+        if (like.userId.toString() !== req.params.userId) {
+            res.status(403).json({ message: 'Unauthorized to delete this like' });
+            return
+        }
+
         const deleted = await deleteLikeService(likeId);
         if (deleted) {
             res.status(204).send(); // No content

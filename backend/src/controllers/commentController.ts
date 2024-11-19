@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import { Router, Request, Response } from 'express';
 import {getCommentsByAuthorId, getCommentsByPostId, getCommentById, createCommentService, updateCommentService, deleteCommentService} from '../services/commentService';
+import { verifyLoggedUser } from '../util/middlewares';
 
 const router = Router();
 
@@ -49,7 +50,7 @@ router.get('/comments/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/comments', async (req: Request, res: Response) => {
+router.post('/comments', verifyLoggedUser, async (req: Request, res: Response) => {
     try {
         const newComment = await createCommentService(req.body);
         res.status(201).json(newComment);
@@ -58,26 +59,47 @@ router.post('/comments', async (req: Request, res: Response) => {
     }
 });
 
-router.put('/comments/:id', async (req: Request, res: Response) => {
+router.put('/comments/:id', verifyLoggedUser, async (req: Request, res: Response) => {
     try {
         const commentId = new ObjectId(req.params.id);
-        const updatedComment = await updateCommentService(commentId, req.body);
-        if (updatedComment) {
-            res.json(updatedComment);
-        } else {
-            res.status(404).json({ message: 'Comment not found' });
+        const comment = await getCommentById(commentId);
+
+        if (!comment) {
+          res.status(404).json({ message: 'Comment not found' });
+          return;
         }
+
+        if (comment.authorId.toString() !== req.params.authorId) {
+          res.status(403).json({ message: 'Unauthorized to update this comment' });
+          return ;
+        }
+
+
+        const updatedComment = await updateCommentService(commentId, req.body);
+        res.json(updatedComment);
     } catch (error) {
         res.status(500).json({ message: 'Error updating comment', error });
     }
 });
 
-router.delete('/comments/:id', async (req: Request, res: Response) => {
+router.delete('/comments/:id',verifyLoggedUser, async (req: Request, res: Response) => {
     try {
         const commentId = new ObjectId(req.params.id);
+        const comment = await getCommentById(commentId);
+
+        if (!comment) {
+          res.status(404).json({ message: 'Comment not found' });
+          return;
+        }
+
+        if (comment.authorId.toString() !== req.params.authorId) {
+          res.status(403).json({ message: 'Unauthorized to update this comment' });
+          return ;
+        }
+
         const deleted = await deleteCommentService(commentId);
         if (deleted) {
-            res.status(204).send(); 
+          res.status(204).send();
         } else {
             res.status(404).json({ message: 'Comment not found' });
         }

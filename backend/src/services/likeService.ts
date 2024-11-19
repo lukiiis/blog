@@ -58,3 +58,22 @@ export async function getLikesByUserId(userId: ObjectId): Promise<LikeDto[]> {
         throw error;
     }
 }
+
+export async function getLikeById(likeId: ObjectId): Promise<LikeDto | null> {
+  try {
+      if (!ObjectId.isValid(likeId)) {
+          throw new Error('Invalid like ID format');
+      }
+
+      const like = await db.collection<Like>('Likes').findOne({ _id: likeId });
+
+      if (!like) {
+          return null; // Return null if the like is not found
+      }
+
+      return mapLikeToDto(like); // Convert to DTO format if necessary
+  } catch (error) {
+      console.error('Error fetching like by ID:', error);
+      throw error; // Rethrow the error to be handled by the caller
+  }
+}
