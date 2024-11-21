@@ -8,8 +8,6 @@ import {
   getPostById,
   getPostByTitle,
   getPostsByAuthorId,
-  getPostsByCategory,
-  getPostsByYearAndMonth,
   getPostsFromCurrentMonth,
   getPostsFromCurrentYear,
   updatePost
@@ -28,7 +26,7 @@ router.get('/posts', async (req, res) => {
 });
 
 
-router.get('/posts/:id', async (req, res) => {
+router.get('/posts/id/:id', async (req, res) => {
     try {
         const post = await getPostsByAuthorId(new ObjectId(req.params.id));
         if (post) {
@@ -166,50 +164,22 @@ router.get('/posts/current-month', async (req: Request, res: Response) => {
   }
 });
 
-// Fetch posts by category
-router.get('/posts/category/:category', async (req: Request, res: Response) => {
-  try {
-      const { category } = req.params;
-      const posts = await getPostsByCategory(category);
-      res.json(posts);
-  } catch (error) {
-      res.status(500).json({ message: `Error retrieving posts for category ${req.params.category}`, error });
-  }
-});
-
-// Fetch posts by year and month
-router.get('/posts/:year/:month', async (req: Request, res: Response) => {
-  const year = parseInt(req.params.year, 10);
-  const month = parseInt(req.params.month, 10);
-
-  if (isNaN(year) || isNaN(month) || month < 0 || month > 11) {
-      res.status(400).json({ message: 'Year and month must be valid numbers' });
-      return;
-  }
-
-  try {
-      const posts = await getPostsByYearAndMonth(year, month - 1);
-      res.json(posts);
-  } catch (error) {
-      res.status(500).json({ message: 'Error retrieving posts by year and month', error });
-  }
-});
-
-router.get('/posts/filter/:year?/:month?/:category?', async (req: Request, res: Response) => {
-  const year = req.params.year ? parseInt(req.params.year, 10) : undefined;
-  const month = req.params.month ? parseInt(req.params.month, 10) - 1 : undefined;
-  const category = req.params.category;
-
+router.get("/posts/filter", async (req: Request, res: Response) => {
+  const year = req.query.year ? parseInt(req.query.year as string, 10) : undefined;
+  const month = req.query.month ? parseInt(req.query.month as string, 10) - 1 : undefined;
+  const category = req.query.category as string | undefined;
+  
   if ((year && isNaN(year)) || (month && (isNaN(month) || month < 0 || month > 11))) {
-      res.status(400).json({ message: 'Invalid year or month format' });
-      return;
+    res.status(400).json({ message: "Invalid year or month format" });
+    return;
   }
-
+  
   try {
-      const posts = await getFilteredPosts(year, month, category);
-      res.json(posts);
+    const posts = await getFilteredPosts(year, month, category);
+    res.json(posts);
   } catch (error) {
-      res.status(500).json({ message: 'Error retrieving filtered posts', error });
+    console.error("Error retrieving filtered posts:", error);
+    res.status(500).json({ message: "Error retrieving filtered posts", error });
   }
 });
 

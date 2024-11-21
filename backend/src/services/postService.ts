@@ -152,61 +152,32 @@ export async function getPostsFromCurrentMonth(): Promise<PostDto[]> {
   }
 }
 
-export async function getPostsByCategory(category: string): Promise<PostDto[]> {
-  try {
-    const posts = await db.collection<Post>("Post").find({
-      category: category
-    }).toArray();
-
-    return posts.map(mapPostToDto);
-  } catch (error) {
-    console.error("Error fetching posts by category:", error);
-    throw error;
-  }
-}
-
-export async function getPostsByYearAndMonth(year: number, month: number): Promise<PostDto[]> {
-  try {
-    const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, month + 1, 1);
-
-    const posts = await db.collection<Post>("Post").find({
-      createdAt: { $gte: startOfMonth, $lt: endOfMonth }
-    }).toArray();
-
-    return posts.map(mapPostToDto);
-  } catch (error) {
-    console.error("Error fetching posts by year and month:", error);
-    throw error;
-  }
-}
-
-// Fetch posts by multiple filters: year, month, category
 export async function getFilteredPosts(
   year?: number,
   month?: number,
   category?: string
 ): Promise<PostDto[]> {
+  const filter: any = {};
+  // console.log(year, month, category);
+  
+  if (month && (month < 0 || month > 11)) {
+    throw new Error("Invalid month value. Month must be between 0 (January) and 11 (December).");
+  }
+  
+  if (year && month) {
+    const start = new Date(year, month ?? 0, 1);
+    const end = month
+      ? new Date(year, month + 1, 1)
+      : new Date(year + 1, 0, 1);
+    filter.createdAt = { $gte: start, $lt: end };
+  }
+  
+  if (category) {
+    filter.category = category;
+  }
+  
   try {
-    const filters: any = {};
-
-    if (year) {
-      const startOfYear = new Date(year, 0, 1);
-      const endOfYear = new Date(year + 1, 0, 1);
-      filters.createdAt = { $gte: startOfYear, $lt: endOfYear };
-    }
-
-    if (month !== undefined && year !== undefined) {
-      const startOfMonth = new Date(year, month, 1);
-      const endOfMonth = new Date(year, month + 1, 1);
-      filters.createdAt = { $gte: startOfMonth, $lt: endOfMonth };
-    }
-
-    if (category) {
-      filters.category = category;
-    }
-
-    const posts = await db.collection<Post>("Post").find(filters).toArray();
+    const posts = await db.collection<Post>("Post").find(filter).toArray();
     return posts.map(mapPostToDto);
   } catch (error) {
     console.error("Error fetching filtered posts:", error);
