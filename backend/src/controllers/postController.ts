@@ -41,7 +41,7 @@ router.get('/posts/:id', async (req, res) => {
     }
 });
 
-router.get('/posts/name/:title', async (req: Request, res: Response) => {
+router.get('/posts/title/:title', async (req: Request, res: Response) => {
   const { title } = req.params;
   
   if (!title) {
