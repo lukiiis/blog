@@ -110,3 +110,105 @@ export async function deletePostService(postId: ObjectId): Promise<boolean> {
     throw error;
   }
 }
+
+export async function getPostsFromCurrentYear(): Promise<PostDto[]> {
+  try {
+    const currentYear = new Date().getFullYear();
+    const startOfYear = new Date(currentYear, 0, 1);
+    const endOfYear = new Date(currentYear + 1, 0, 1);
+
+    const posts = await db.collection<Post>("Post").find({
+      createdAt: { $gte: startOfYear, $lt: endOfYear }
+    }).toArray();
+
+    return posts.map(mapPostToDto);
+  } catch (error) {
+    console.error("Error fetching posts from the current year:", error);
+    throw error;
+  }
+}
+
+// Fetch posts from the current month
+export async function getPostsFromCurrentMonth(): Promise<PostDto[]> {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const posts = await db.collection<Post>("Post").find({
+      createdAt: { $gte: startOfMonth, $lt: endOfMonth }
+    }).toArray();
+
+    return posts.map(mapPostToDto);
+  } catch (error) {
+    console.error("Error fetching posts from the current month:", error);
+    throw error;
+  }
+}
+
+export async function getPostsByCategory(category: string): Promise<PostDto[]> {
+  try {
+    const posts = await db.collection<Post>("Post").find({
+      category: category
+    }).toArray();
+
+    return posts.map(mapPostToDto);
+  } catch (error) {
+    console.error("Error fetching posts by category:", error);
+    throw error;
+  }
+}
+
+export async function getPostsByYearAndMonth(year: number, month: number): Promise<PostDto[]> {
+  try {
+    // Validate inputs
+    if (isNaN(year) || isNaN(month) || month < 0 || month > 11) {
+      throw new Error("Invalid year or month. Month should be between 0 (January) and 11 (December).");
+    }
+
+    const startOfMonth = new Date(year, month, 1);
+    const endOfMonth = new Date(year, month + 1, 1);
+
+    const posts = await db.collection<Post>("Post").find({
+      createdAt: { $gte: startOfMonth, $lt: endOfMonth }
+    }).toArray();
+
+    return posts.map(mapPostToDto);
+  } catch (error) {
+    console.error("Error fetching posts by year and month:", error);
+    throw error;
+  }
+}
+
+// Fetch posts by multiple filters: year, month, category
+export async function getFilteredPosts(
+  year?: number,
+  month?: number,
+  category?: string
+): Promise<PostDto[]> {
+  try {
+    const filters: any = {};
+
+    if (year) {
+      const startOfYear = new Date(year, 0, 1);
+      const endOfYear = new Date(year + 1, 0, 1);
+      filters.createdAt = { $gte: startOfYear, $lt: endOfYear };
+    }
+
+    if (month !== undefined && year !== undefined) {
+      const startOfMonth = new Date(year, month, 1);
+      const endOfMonth = new Date(year, month + 1, 1);
+      filters.createdAt = { $gte: startOfMonth, $lt: endOfMonth };
+    }
+
+    if (category) {
+      filters.category = category;
+    }
+
+    const posts = await db.collection<Post>("Post").find(filters).toArray();
+    return posts.map(mapPostToDto);
+  } catch (error) {
+    console.error("Error fetching filtered posts:", error);
+    throw error;
+  }
+}
