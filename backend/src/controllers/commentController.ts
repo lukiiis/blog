@@ -71,7 +71,7 @@ router.put('/comments/:id', verifyLoggedUser, async (req: Request, res: Response
 
         if (comment.authorId.toString() !== req.params.authorId) {
           res.status(403).json({ message: 'Unauthorized to update this comment' });
-          return ;
+          return;
         }
 
         const updatedComment = await updateCommentService(commentId, req.body);
@@ -110,20 +110,20 @@ router.patch('/comments/:id', verifyLoggedUser, async (req: Request, res: Respon
 
 
 router.delete('/comments/:id',verifyLoggedUser, async (req: Request, res: Response) => {
+    const commentId = new ObjectId(req.params.id);
+    const comment = await getCommentById(commentId);
+
+    if (!comment) {
+      res.status(404).json({ message: 'Comment not found' });
+      return;
+    }
+
+    if (comment.authorId.toString() !== req.params.authorId) {
+      res.status(403).json({ message: 'Unauthorized to update this comment' });
+      return;
+    }
+
     try {
-        const commentId = new ObjectId(req.params.id);
-        const comment = await getCommentById(commentId);
-
-        if (!comment) {
-          res.status(404).json({ message: 'Comment not found' });
-          return;
-        }
-
-        if (comment.authorId.toString() !== req.params.authorId) {
-          res.status(403).json({ message: 'Unauthorized to update this comment' });
-          return ;
-        }
-
         const deleted = await deleteCommentService(commentId);
         if (deleted) {
           res.status(204).send();
