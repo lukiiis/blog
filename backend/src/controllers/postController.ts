@@ -61,6 +61,32 @@ router.put('/posts/:id', verifyLoggedUser, async (req: Request, res: Response) =
     }
 });
 
+router.patch('/posts/:id', verifyLoggedUser, async (req: Request, res: Response) => {
+    try {
+        const postId = new ObjectId(req.params.id);
+        const post = await getPostById(postId);
+
+        if (!post) {
+            res.status(404).json({ message: 'Post not found' });
+            return;
+        }
+
+        if (post.authorId.toString() !== req.body.authorId) {
+            res.status(401).json({ message: 'Unauthorized' });
+            return;
+        }
+
+        const updatedPost = await updatePostService(postId, req.body);
+        if (updatedPost) {
+            res.json(updatedPost);
+        } else {
+            res.status(404).json({ message: 'Failed to update post' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error partially updating post', error });
+    }
+});
+
 router.delete('/posts/:id',verifyLoggedUser, async (req: Request, res: Response) => {
     try {
 

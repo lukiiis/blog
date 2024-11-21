@@ -74,13 +74,40 @@ router.put('/comments/:id', verifyLoggedUser, async (req: Request, res: Response
           return ;
         }
 
-
         const updatedComment = await updateCommentService(commentId, req.body);
         res.json(updatedComment);
     } catch (error) {
         res.status(500).json({ message: 'Error updating comment', error });
     }
 });
+
+
+router.patch('/comments/:id', verifyLoggedUser, async (req: Request, res: Response) => {
+    try {
+        const commentId = new ObjectId(req.params.id);
+        const comment = await getCommentById(commentId);
+
+        if (!comment) {
+            res.status(404).json({ message: 'Comment not found' });
+            return;
+        }
+
+        if (comment.authorId.toString() !== req.body.authorId) {
+            res.status(403).json({ message: 'Unauthorized to update this comment' });
+            return;
+        }
+
+        const updatedComment = await updateCommentService(commentId, req.body);
+        if (updatedComment) {
+            res.json(updatedComment);
+        } else {
+            res.status(404).json({ message: 'Failed to update comment' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Error partially updating comment', error });
+    }
+});
+
 
 router.delete('/comments/:id',verifyLoggedUser, async (req: Request, res: Response) => {
     try {

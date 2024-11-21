@@ -51,7 +51,7 @@ router.get("/user/email/:email", verifyAdmin, async (req, res) => {
   }
 });
 
-router.put("/user/:id", async (req, res) => {
+router.patch("/user/:id", async (req, res) => {
   const userId = req.params.id;
   // @ts-ignore
   if (req.user.id !== userId) {
