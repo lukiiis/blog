@@ -16,11 +16,6 @@ router.get("/users", verifyAdmin, async (req, res) => {
 
 router.get("/user/:id", verifyLoggedUser, async (req, res) => {
   const userId = req.params.id;
-  //@ts-ignore
-  if (req.user.id !== userId && !req.user.isAdmin) {
-    res.status(401).send();
-    return;
-  }
   
   try {
     const user = await getUserById(new ObjectId(userId));
@@ -51,7 +46,7 @@ router.get("/user/email/:email", verifyAdmin, async (req, res) => {
   }
 });
 
-router.patch("/user/:id", async (req, res) => {
+router.put("/user/:id", verifyLoggedUser, async (req, res) => {
   const userId = req.params.id;
   // @ts-ignore
   if (req.user.id !== userId) {
@@ -72,7 +67,7 @@ router.patch("/user/:id", async (req, res) => {
   }
 });
 
-router.delete("/user/:id", async (req, res) => {
+router.delete("/user/:id", verifyLoggedUser, async (req, res) => {
   const userId = req.params.id;
   //@ts-ignore
   if (req.user.id !== userId && !req.user.isAdmin) {
