@@ -14,6 +14,16 @@ export async function getAllPosts(): Promise<PostDto[]> {
   }
 }
 
+export async function getPostByTitle(title: string): Promise<PostDto | null> {
+  try {
+    const post = await db.collection<Post>("Post").findOne({ title });
+    return post ? mapPostToDto(post) : null;
+  } catch (error) {
+    console.error("Error fetching post by title:", error);
+    throw error;
+  }
+}
+
 export async function getPostsByAuthorId(authorId: ObjectId): Promise<PostDto[]> {
   try {
     if (!ObjectId.isValid(authorId)) {
@@ -48,7 +58,7 @@ export async function getPostById(postId: ObjectId): Promise<PostDto | null> {
   }
 }
 
-export async function createPostService(postData: Omit<PostDto, 'id'>): Promise<PostDto> {
+export async function createPost(postData: Omit<PostDto, 'id'>): Promise<PostDto> {
   if (!postData.authorId) {
     throw new Error("Author ID is required to create a post");
   }
@@ -77,16 +87,12 @@ export async function createPostService(postData: Omit<PostDto, 'id'>): Promise<
   }
 }
 
-export async function updatePostService(postId: ObjectId, updateData: Partial<PostDto>): Promise<PostDto | null> {
+export async function updatePost(postId: ObjectId, updateData: Partial<PostDto>): Promise<PostDto | null> {
   if (!ObjectId.isValid(postId)) {
     throw new Error("Invalid post ID format");
   }
   try {
     const updateFields: Partial<Post> = { ...updateData, updatedAt: new Date() };
-
-    if (updateFields.createdAt && typeof updateFields.createdAt === 'string') {
-      updateFields.createdAt = new Date(updateFields.createdAt); 
-    }
 
     const result = await db.collection<Post>("Post").findOneAndUpdate(
       { _id: postId },
@@ -112,11 +118,11 @@ export async function deletePostService(postId: ObjectId): Promise<boolean> {
 }
 
 export async function getPostsFromCurrentYear(): Promise<PostDto[]> {
-  try {
-    const currentYear = new Date().getFullYear();
-    const startOfYear = new Date(currentYear, 0, 1);
-    const endOfYear = new Date(currentYear + 1, 0, 1);
+  const currentYear = new Date().getFullYear();
+  const startOfYear = new Date(currentYear, 0, 1);
+  const endOfYear = new Date(currentYear + 1, 0, 1);
 
+  try {
     const posts = await db.collection<Post>("Post").find({
       createdAt: { $gte: startOfYear, $lt: endOfYear }
     }).toArray();
@@ -161,11 +167,6 @@ export async function getPostsByCategory(category: string): Promise<PostDto[]> {
 
 export async function getPostsByYearAndMonth(year: number, month: number): Promise<PostDto[]> {
   try {
-    // Validate inputs
-    if (isNaN(year) || isNaN(month) || month < 0 || month > 11) {
-      throw new Error("Invalid year or month. Month should be between 0 (January) and 11 (December).");
-    }
-
     const startOfMonth = new Date(year, month, 1);
     const endOfMonth = new Date(year, month + 1, 1);
 
