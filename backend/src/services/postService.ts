@@ -65,9 +65,16 @@ export async function createPost(postData: Omit<PostDto, 'id'>): Promise<PostDto
   console.log("Post data received:", postData);
   console.log("Author ID:", postData.authorId);
   
+  let authorObjectId;
+  try {
+    authorObjectId = new ObjectId(postData.authorId);
+  } catch (error) {
+    throw new Error("Invalid Author ID format");
+  }
+
   const newPost: Post = {
     _id: new ObjectId(),
-    authorId: postData.authorId,
+    authorId: authorObjectId,
     title: postData.title || "",
     content: postData.content || "",
     category: postData.category || "",
@@ -93,6 +100,7 @@ export async function updatePost(postId: ObjectId, updateData: Partial<PostDto>)
   }
   try {
     const updateFields: Partial<Post> = { ...updateData, updatedAt: new Date() };
+    updateFields.authorId = new ObjectId(updateFields.authorId);
 
     const result = await db.collection<Post>("Post").findOneAndUpdate(
       { _id: postId },

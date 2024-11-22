@@ -78,13 +78,14 @@ router.put('/posts/:id', verifyLoggedUser, async (req: Request, res: Response) =
       return;
     }
 
-    if(post.authorId.toString() !== req.params.authorId) {
+    // @ts-ignore
+    if(post.authorId.toString() !== req.user.id) {
       res.status(401).json({ message: 'Unauthorized' });
       return;
     }
 
     try {
-        const updatedPost = await updatePost(new ObjectId(req.params.id), req.body);
+        const updatedPost = await updatePost(postId, req.body);
         res.json(updatedPost);
     } catch (error) {
         res.status(500).json({ message: 'Error updating post', error });
@@ -118,7 +119,7 @@ router.patch("/posts/:id/name", async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/posts/:id',verifyLoggedUser, async (req: Request, res: Response) => {
+router.delete('/posts/:id', async (req: Request, res: Response) => {
 
     const postId = new ObjectId(req.params.id);
     const post = await getPostById(postId);
@@ -128,13 +129,14 @@ router.delete('/posts/:id',verifyLoggedUser, async (req: Request, res: Response)
       return;
     }
 
-    if(post.authorId.toString() !== req.params.authorId) {
+    // @ts-ignore
+    if(post.authorId.toString() !== req.user.id) {
       res.status(401).json({ message: 'Unauthorized' });
       return;
     }
 
     try {
-        const deleted = await deletePostService(new ObjectId(req.params.id));
+        const deleted = await deletePostService(postId);
         if (deleted) {
           res.status(204).send();
         } else {
