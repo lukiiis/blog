@@ -69,7 +69,8 @@ router.put('/comments/:id', verifyLoggedUser, async (req: Request, res: Response
           return;
         }
 
-        if (comment.authorId.toString() !== req.params.authorId) {
+        //@ts-ignore
+        if (comment.authorId.toString() !== req.user.id) {
           res.status(403).json({ message: 'Unauthorized to update this comment' });
           return;
         }
@@ -92,7 +93,8 @@ router.patch('/comments/:id', verifyLoggedUser, async (req: Request, res: Respon
             return;
         }
 
-        if (comment.authorId.toString() !== req.body.authorId) {
+        //@ts-ignore
+        if (comment.authorId.toString() !== req.user.id) {
             res.status(403).json({ message: 'Unauthorized to update this comment' });
             return;
         }
@@ -118,7 +120,8 @@ router.delete('/comments/:id',verifyLoggedUser, async (req: Request, res: Respon
       return;
     }
 
-    if (comment.authorId.toString() !== req.params.authorId) {
+    //@ts-ignore
+    if (comment.authorId.toString() !== req.user.id) {
       res.status(403).json({ message: 'Unauthorized to update this comment' });
       return;
     }
