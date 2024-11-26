@@ -26,7 +26,7 @@ const Home: React.FC = () => {
                         <h3 className="text-xl font-semibold text-black">
                             <Link to={`/post/${post.id}`}>{post.title}</Link>
                         </h3>
-                        <p className="text-gray-700">{post.content}</p>
+                        <p className="text-gray-700 break-words">{post.content}</p>
                     </article>
                 ))}
             </div>

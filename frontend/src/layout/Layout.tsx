@@ -11,6 +11,12 @@ const Layout: React.FC = () => {
         }
     }, [token, navigate]);
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+        window.location.reload();
+    };
+
     return (
         <div className="min-h-screen flex flex-col">
             <header className="bg-blue-600 w-full py-4 shadow-md">
@@ -18,7 +24,11 @@ const Layout: React.FC = () => {
                     <Link to="/"><h1 className="text-white text-3xl">Blobiboks</h1></Link>
                     <nav className="flex space-x-4">
                         {token ? (
-                            <Link to="/profile" className="text-white">Profile</Link>
+                            <>
+                                <Link to="/profile" className="text-white">Profile</Link>
+                                <Link to="/create-post" className="text-white">Create Post</Link>
+                                <button onClick={handleLogout} className="text-white">Logout</button>
+                            </>
                         ) : (
                             <>
                                 <Link to="/login" className="text-white">Login</Link>

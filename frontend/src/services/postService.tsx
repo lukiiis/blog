@@ -14,3 +14,8 @@ export const fetchPosts = async (): Promise<Post[]> => {
     const response = await axiosInstance.get('/posts');
     return response.data;
 };
+
+export const fetchPostsByAuthorId = async (authorId: string): Promise<Post[]> => {
+    const response = await axiosInstance.get(`/posts/author-id/${authorId}`);
+    return response.data;
+};

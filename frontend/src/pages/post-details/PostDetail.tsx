@@ -45,7 +45,7 @@ const PostDetail: React.FC = () => {
     return (
         <div className="bg-white p-6 rounded-lg shadow-md w-full mx-auto max-w-2xl">
             <h2 className="text-2xl font-bold mb-4 text-center text-black">{post?.title}</h2>
-            <p className="text-gray-800 mb-4">{post?.content}</p>
+            <p className="text-gray-800 mb-4 break-words">{post?.content}</p>
             <p className="text-gray-800"><strong>Author ID:</strong> {post?.authorId}</p>
             <p className="text-gray-800"><strong>Category:</strong> {post?.category}</p>
             <p className="text-gray-800"><strong>Created At:</strong> {post?.createdAt.toLocaleString()}</p>

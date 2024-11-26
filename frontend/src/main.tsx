@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './index.css';
 import Home from './pages/home/Home';
-import Post from './pages/post/Post';
+import CreatePost from './pages/create-post/CreatePost';
 import PostDetail from './pages/post-details/PostDetail';
 import Layout from './layout/Layout';
 import Login from './pages/login/Login';
@@ -23,8 +23,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/post",
-        element: <Post />,
+        path: "/create-post",
+        element: <CreatePost />,
       },
       {
         path: "/post/:id",
