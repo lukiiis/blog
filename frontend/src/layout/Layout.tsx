@@ -1,17 +1,38 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link, useNavigate } from 'react-router-dom';
 
 const Layout: React.FC = () => {
+    const token = localStorage.getItem('token');
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        if (token && (window.location.pathname === '/login' || window.location.pathname === '/register')) {
+            navigate('/');
+        }
+    }, [token, navigate]);
+
     return (
         <div className="min-h-screen flex flex-col">
-            <header className="bg-blue-600 w-full py-4 shadow-md text-center">
-                <h1 className="text-white text-3xl">My Blog</h1>
+            <header className="bg-blue-600 w-full py-4 shadow-md">
+                <div className="max-w-5xl mx-auto flex justify-between items-center px-4">
+                    <Link to="/"><h1 className="text-white text-3xl">Blobiboks</h1></Link>
+                    <nav className="flex space-x-4">
+                        {token ? (
+                            <Link to="/profile" className="text-white">Profile</Link>
+                        ) : (
+                            <>
+                                <Link to="/login" className="text-white">Login</Link>
+                                <Link to="/register" className="text-white">Register</Link>
+                            </>
+                        )}
+                    </nav>
+                </div>
             </header>
-            <main className="flex-grow container mx-auto p-4">
+            <main className="h-full flex-grow w-full mx-auto">
                 <Outlet />
             </main>
             <footer className="bg-blue-600 w-full py-4 text-center text-white">
-                &copy; 2023 My Blog. All rights reserved.
+                &copy; 2024 Blobiboks. All rights reserved.
             </footer>
         </div>
     );

@@ -18,8 +18,8 @@ const Home: React.FC = () => {
     }
 
     return (
-        <section className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
-            <h2 className="text-2xl font-bold mb-4 text-center">Latest Posts</h2>
+        <section className="bg-white p-6 rounded-lg shadow-md w-full mx-auto max-w-2xl">
+            <h2 className="text-black text-2xl font-bold mb-4 text-center">Latest Posts</h2>
             <div className="space-y-4">
                 {posts?.map((post: Post) => (
                     <article key={post.id} className="p-4 bg-gray-50 rounded-lg shadow-sm">

@@ -9,6 +9,7 @@ import PostDetail from './pages/post-details/PostDetail';
 import Layout from './layout/Layout';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
+import Profile from './pages/profile/Profile';
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
       },
     ],
   },
