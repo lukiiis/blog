@@ -50,7 +50,7 @@ router.get('/comments/:id', async (req: Request, res: Response) => {
     }
 });
 
-router.post('/comments', verifyLoggedUser, async (req: Request, res: Response) => {
+router.post('/comments', /*verifyLoggedUser,*/ async (req: Request, res: Response) => {
     try {
         const newComment = await createCommentService(req.body);
         res.status(201).json(newComment);

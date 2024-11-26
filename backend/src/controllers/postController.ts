@@ -25,8 +25,8 @@ router.get('/posts', async (req, res) => {
     }
 });
 
-
-router.get('/posts/id/:id', async (req, res) => {
+//get posts by author id
+router.get('/posts/author-id/:id', async (req, res) => {
     try {
         const post = await getPostsByAuthorId(new ObjectId(req.params.id));
         if (post) {
@@ -37,6 +37,20 @@ router.get('/posts/id/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving post', error });
     }
+});
+
+//get post by postid
+router.get('/posts/id/:id', async (req, res) => {
+  try {
+      const post = await getPostById(new ObjectId(req.params.id));
+      if (post) {
+          res.json(post);
+      } else {
+          res.status(404).json({ message: 'Post not found' });
+      }
+  } catch (error) {
+      res.status(500).json({ message: 'Error retrieving post', error });
+  }
 });
 
 router.get('/posts/title/:title', async (req: Request, res: Response) => {

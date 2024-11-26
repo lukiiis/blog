@@ -65,8 +65,8 @@ export async function createCommentService(commentData: Omit<CommentDto, 'id'>):
 
     const newComment: Comment = {
       _id: new ObjectId(),
-      authorId: commentData.authorId,
-      postId: commentData.postId,
+      authorId: new ObjectId(commentData.authorId),
+      postId: new ObjectId(commentData.postId),
       content: commentData.content || "",
       createdAt: new Date(),
     };
