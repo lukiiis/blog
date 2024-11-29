@@ -18,6 +18,7 @@ interface LoginSuccessResponse {
 }
 
 const login = async (data: LoginFormInputs) => {
+    console.log(data)
     const response = await axiosInstance.post('/auth', data);
     return response.data;
 };

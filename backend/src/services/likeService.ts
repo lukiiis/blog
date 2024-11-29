@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { db } from "../db/connection";
-import { Like } from "../util/dao";
+import { Like, User } from "../util/dao";
 import { LikeDto } from "../util/dto";
 import { mapLikeToDto } from "../mappers/mappers";
 
@@ -15,7 +15,7 @@ export async function createLikeService(likeData: Omit<LikeDto, 'id'>): Promise<
         };
 
         const result = await db.collection<Like>("Like").insertOne(newLike);
-        
+
         return mapLikeToDto({
             ...newLike,
             _id: result.insertedId,
@@ -37,11 +37,26 @@ export async function deleteLikeService(likeId: ObjectId): Promise<boolean> {
     }
 }
 
-// Funkcja do pobierania polubień na podstawie postId
 export async function getLikesByPostId(postId: ObjectId): Promise<LikeDto[]> {
     try {
+        // Pobieranie wszystkich polubień na podstawie postId
         const likes = await db.collection<Like>("Like").find({ postId }).toArray();
-        return likes.map(mapLikeToDto);
+
+        if (!likes || likes.length === 0) {
+            return []; // Zwróć pustą tablicę, jeśli brak polubień
+        }
+
+        // Mapowanie polubień na DTO z uwzględnieniem nazwy użytkownika
+        const likeDtos: LikeDto[] = await Promise.all(
+            likes.map(async (element) => {
+                const user = await db.collection<User>("User").findOne({ _id: element.userId });
+                const likeDTO = mapLikeToDto(element);
+                likeDTO.username = user?.username || "Unknown"; // Ustaw "Unknown", jeśli użytkownik nie istnieje
+                return likeDTO;
+            })
+        );
+
+        return likeDtos; // Zwróć tablicę DTO
     } catch (error) {
         console.error("Error fetching likes by post ID:", error);
         throw error;
@@ -60,20 +75,24 @@ export async function getLikesByUserId(userId: ObjectId): Promise<LikeDto[]> {
 }
 
 export async function getLikeById(likeId: ObjectId): Promise<LikeDto | null> {
-  try {
-      if (!ObjectId.isValid(likeId)) {
-          throw new Error('Invalid like ID format');
-      }
+    try {
+        if (!ObjectId.isValid(likeId)) {
+            throw new Error('Invalid like ID format');
+        }
 
-      const like = await db.collection<Like>('Likes').findOne({ _id: likeId });
+        const like = await db.collection<Like>('Like').findOne({ _id: likeId });
+        const user = await db.collection<User>("User").findOne({ _id: like?.userId });
 
-      if (!like) {
-          return null; // Return null if the like is not found
-      }
+        if (!like) {
+            return null;
+        }
 
-      return mapLikeToDto(like); // Convert to DTO format if necessary
-  } catch (error) {
-      console.error('Error fetching like by ID:', error);
-      throw error; // Rethrow the error to be handled by the caller
-  }
+        const likeDTO = mapLikeToDto(like)
+        likeDTO.username = user?.username;
+
+        return likeDTO; // Convert to DTO format if necessary
+    } catch (error) {
+        console.error('Error fetching like by ID:', error);
+        throw error; // Rethrow the error to be handled by the caller
+    }
 }

@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { db } from "../db/connection";
-import { Comment } from "../util/dao";
+import { Comment, User } from "../util/dao";
 import { CommentDto } from "../util/dto"; 
 import { mapCommentToDto } from "../mappers/mappers"; 
 
@@ -30,18 +30,30 @@ export async function getCommentsByAuthorId(authorId: ObjectId): Promise<Comment
 }
 
 export async function getCommentsByPostId(postId: ObjectId): Promise<CommentDto[]> {
-    try {
+  try {
       if (!ObjectId.isValid(postId)) {
-        throw new Error("Invalid post ID format");
+          throw new Error("Invalid post ID format");
       }
-  
-      const comments = await db.collection<Comment>("Comment").find({ postId: postId }).toArray();
-      return comments.map(mapCommentToDto);
-    } catch (error) {
+
+      // Pobierz komentarze z bazy danych
+      const comments = await db.collection<Comment>("Comment").find({ postId }).toArray();
+
+      // Mapuj komentarze na DTO z dodatkową informacją o autorze
+      const commentDtos: CommentDto[] = await Promise.all(
+          comments.map(async (comment) => {
+              const user = await db.collection<User>("User").findOne({ _id: comment.authorId });
+              const commentDto = mapCommentToDto(comment);
+              commentDto.username = user?.username || "Unknown"; // Ustaw "Unknown", jeśli użytkownik nie istnieje
+              return commentDto;
+          })
+      );
+
+      return commentDtos;
+  } catch (error) {
       console.error("Error fetching comments by post ID:", error);
       throw error;
-    }
   }
+}
 
 export async function getCommentById(commentId: ObjectId): Promise<CommentDto | null> {
   try {

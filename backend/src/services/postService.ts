@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { db } from "../db/connection";
-import { Post } from "../util/dao";
+import { Post, User } from "../util/dao";
 import { PostDto } from "../util/dto";
 import { mapPostToDto } from "../mappers/mappers";
 
@@ -46,12 +46,16 @@ export async function getPostById(postId: ObjectId): Promise<PostDto | null> {
     }
 
     const post = await db.collection<Post>("Post").findOne({ _id: postId });
+    const user = await db.collection<User>("User").findOne({ _id: post?.authorId });
 
     if (!post) {
-      return null; // Return null if post not found
+      return null;
     }
 
-    return mapPostToDto(post);
+    const postDTO = mapPostToDto(post);
+    postDTO.username = user?.username;
+
+    return postDTO;
   } catch (error) {
     console.error("Error fetching post by ID:", error);
     throw error;

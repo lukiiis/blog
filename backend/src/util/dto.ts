@@ -16,12 +16,19 @@ export interface UserDto {
 export interface PostDto {
     id: ObjectId;
     authorId: ObjectId;
+    username?: string;
     title: string;
     content: string;
     category: string;
     createdAt: Date;
     updatedAt: Date;
 }
+
+
+export interface PostWithUsernameDto extends PostDto {
+    username: string;
+}
+
 
 export interface PostWithCommentsDto extends PostDto {
     comments: CommentDto[];
@@ -38,6 +45,7 @@ export interface PostFullDto extends PostDto {
 
 export interface CommentDto {
     id: ObjectId;
+    username?: string;
     postId: ObjectId;
     authorId: ObjectId;
     content: string;
@@ -54,6 +62,7 @@ export interface CommentFullDto {
 
 export interface LikeDto {
     id: ObjectId;
+    username?: string;
     postId: ObjectId;
     userId: ObjectId;
 }

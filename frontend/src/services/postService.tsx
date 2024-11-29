@@ -3,6 +3,7 @@ import axiosInstance from '../config/axiosConfig';
 export interface Post {
     id: string;
     authorId: string;
+    username?: string;
     title: string;
     content: string;
     category: string;

@@ -12,8 +12,8 @@ const Layout: React.FC = () => {
     }, [token, navigate]);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/login');
+        localStorage.clear()
+        navigate('/');
         window.location.reload();
     };
 

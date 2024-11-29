@@ -18,6 +18,7 @@ const Home: React.FC = () => {
     }
 
     return (
+
         <section className="bg-white p-6 rounded-lg shadow-md w-full mx-auto max-w-2xl">
             <h2 className="text-black text-2xl font-bold mb-4 text-center">Latest Posts</h2>
             <div className="space-y-4">

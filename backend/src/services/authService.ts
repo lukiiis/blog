@@ -9,10 +9,12 @@ dotenv.config();
 
 function generateAccessToken(user: UserDto) {
   const secret = process.env.SECRET_KEY;
+  console.log(user)
   if (!secret) {
     throw new Error("Missing secret key");
   }
-  return jwt.sign(user, secret, { expiresIn: '1d' }); // 1 day expiration
+  
+  return jwt.sign(user, secret, { expiresIn: '1d' });
 }
 
 export async function registerUser(req: RegisterRequestDto) {
@@ -33,12 +35,14 @@ export async function registerUser(req: RegisterRequestDto) {
 
 export async function authenticate(req: AuthRequestDto): Promise<AuthResponseDto | undefined> {
   const user = await getUserByEmail(req.email);
-  if (user) {
-    return {
-      message: `User authenticated`,
-      token: generateAccessToken(user),
-      userId: user.id,
-      isAdmin: user.isAdmin
-    };
+  if (!user) {
+    throw new Error("User not found");
   }
+
+  return {
+    message: `User authenticated`,
+    token: generateAccessToken(user),
+    userId: user.id,
+    isAdmin: user.isAdmin
+  };
 }
