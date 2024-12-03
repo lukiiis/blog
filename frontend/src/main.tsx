@@ -10,6 +10,7 @@ import Layout from './layout/Layout';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import Profile from './pages/profile/Profile';
+import AdminDashboard from './pages/adminDashboard/adminDashboard';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile />,
+      },
+      {
+        path: "/adminDashboard",
+        element: <AdminDashboard />,
       },
     ],
   },

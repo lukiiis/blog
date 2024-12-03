@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteUser, getAllUsers, getUserByEmail, getUserById, updateUser } from "../services/userService";
+import { deleteUser, getAllUsers, getUserByEmail, getUserById, updateUser, blockUser, unblockUser, changeUserPassword, changeUserRole } from "../services/userService";
 import { ObjectId } from 'mongodb';
 import { verifyAdmin, verifyLoggedUser } from "../util/middlewares";
 
@@ -88,4 +88,70 @@ router.delete("/user/:id", verifyLoggedUser, async (req, res) => {
   }
 });
 
+router.put("/user/:id/block", verifyAdmin, async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const blockedUser = await blockUser(new ObjectId(userId));
+    if (blockedUser) {
+      res.json(blockedUser);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error blocking user", error });
+  }
+});
+
+router.put("/user/:id/unblock", verifyAdmin, async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const unblockedUser = await unblockUser(new ObjectId(userId));
+    if (unblockedUser) {
+      res.json(unblockedUser);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error unblocking user", error });
+  }
+});
+
+router.put("/user/:id/password", verifyAdmin, async (req, res) => {
+  const userId = req.params.id;
+  const { password } = req.body;
+
+  console.log(password)
+  try {
+    const updatedUser = await changeUserPassword(new ObjectId(userId), password);
+    if (updatedUser) {
+      res.json(updatedUser);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error changing user password", error });
+  }
+});
+
+
+router.put("/user/:id/role", verifyAdmin, async (req, res) => {
+  const userId = req.params.id;
+  const { isAdmin } = req.body;
+
+  try {
+    const updatedUser = await changeUserRole(new ObjectId(userId), isAdmin);
+    if (updatedUser) {
+      res.json(updatedUser);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error changing user role", error });
+  }
+});
+
 export default router;
+
+

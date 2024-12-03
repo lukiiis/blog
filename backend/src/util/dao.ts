@@ -10,6 +10,7 @@ export interface User {
     profilePicture?: string;
     createdAt: Date;
     updatedAt: Date;
+    isBlocked: boolean;
     isAdmin: boolean;
     isActive: boolean;
 }
