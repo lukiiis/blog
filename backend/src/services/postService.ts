@@ -44,7 +44,6 @@ export async function getPostById(postId: ObjectId): Promise<PostDto | null> {
     if (!ObjectId.isValid(postId)) {
       throw new Error("Invalid post ID format");
     }
-
     const post = await db.collection<Post>("Post").findOne({ _id: postId });
     const user = await db.collection<User>("User").findOne({ _id: post?.authorId });
 
@@ -54,7 +53,6 @@ export async function getPostById(postId: ObjectId): Promise<PostDto | null> {
 
     const postDTO = mapPostToDto(post);
     postDTO.username = user?.username;
-
     return postDTO;
   } catch (error) {
     console.error("Error fetching post by ID:", error);
@@ -146,7 +144,6 @@ export async function getPostsFromCurrentYear(): Promise<PostDto[]> {
   }
 }
 
-// Fetch posts from the current month
 export async function getPostsFromCurrentMonth(): Promise<PostDto[]> {
   try {
     const now = new Date();

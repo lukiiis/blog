@@ -17,12 +17,12 @@ import { verifyLoggedUser } from "../util/middlewares";
 const router = Router();
 
 router.get('/posts', async (req, res) => {
-    try {
-        const posts = await getAllPosts();
-        res.json(posts);
-    } catch (error) {
-        res.status(500).json({ message: 'Error retrieving posts', error });
-    }
+  try {
+    const posts = await getAllPosts();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({message: 'Error retrieving posts', error});
+  }
 });
 
 //get posts by author id
@@ -37,6 +37,9 @@ router.get('/posts/author-id/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving post', error });
     }
+  } catch (error) {
+    res.status(500).json({message: 'Error retrieving post', error});
+  }
 });
 
 //get post by postid
@@ -81,6 +84,20 @@ router.post('/posts', verifyLoggedUser, async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ message: 'Error creating post', error });
     }
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({error: "Internal server error"});
+  }
+});
+
+router.post('/posts', verifyLoggedUser, async (req: Request, res: Response) => {
+  try {
+    const newPost = await createPost(req.body);
+    res.status(201).json(newPost);
+  } catch (error) {
+    res.status(500).json({message: 'Error creating post', error});
+  }
 });
 
 router.put('/posts/:id', verifyLoggedUser, async (req: Request, res: Response) => {
@@ -104,9 +121,13 @@ router.put('/posts/:id', verifyLoggedUser, async (req: Request, res: Response) =
     } catch (error) {
         res.status(500).json({ message: 'Error updating post', error });
     }
+  } catch (error) {
+    console.error("Error updating post name:", error);
+    res.status(500).json({error: "Internal server error"});
+  }
 });
 
-router.patch("/posts/:id/name", async (req: Request, res: Response) => {
+router.patch("/posts/:id/name", verifyLoggedUser, async (req: Request, res: Response) => {
   const postId = req.params.id;
   const { name } = req.body;
   
@@ -133,8 +154,7 @@ router.patch("/posts/:id/name", async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/posts/:id', async (req: Request, res: Response) => {
-
+router.delete('/posts/:id', verifyLoggedUser, async (req: Request, res: Response) => {
     const postId = new ObjectId(req.params.id);
     const post = await getPostById(postId);
     
@@ -159,6 +179,47 @@ router.delete('/posts/:id', async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ message: 'Error deleting post', error });
     }
+  } catch (error) {
+    res.status(500).json({message: 'Error deleting post', error});
+  }
+});
+
+router.get('/posts/current-year', async (req: Request, res: Response) => {
+  try {
+    const posts = await getPostsFromCurrentYear();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({message: 'Error retrieving posts from the current year', error});
+  }
+});
+
+// Fetch posts from the current month
+router.get('/posts/current-month', async (req: Request, res: Response) => {
+  try {
+    const posts = await getPostsFromCurrentMonth();
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({message: 'Error retrieving posts from the current month', error});
+  }
+});
+
+router.get("/posts/filter", async (req: Request, res: Response) => {
+  const year = req.query.year ? parseInt(req.query.year as string, 10) : undefined;
+  const month = req.query.month ? parseInt(req.query.month as string, 10) - 1 : undefined;
+  const category = req.query.category as string | undefined;
+  
+  if ((year && isNaN(year)) || (month && (isNaN(month) || month < 0 || month > 11))) {
+    res.status(400).json({message: "Invalid year or month format"});
+    return;
+  }
+  
+  try {
+    const posts = await getFilteredPosts(year, month, category);
+    res.json(posts);
+  } catch (error) {
+    console.error("Error retrieving filtered posts:", error);
+    res.status(500).json({message: "Error retrieving filtered posts", error});
+  }
 });
 
 router.get('/posts/current-year', async (req: Request, res: Response) => {
