@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   fetchUsers,
@@ -7,8 +7,20 @@ import {
   handleChangePassword,
   changeUserRole,
 } from './adminDashboardFunctions';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard: React.FC = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const isAdmin = localStorage.getItem("isAdmin");
+
+    if (!token || isAdmin !== "true") {
+      navigate("/");
+    }
+  }, [navigate]);
+
   const [message, setMessage] = useState('');
   const [passwordInput, setPasswordInput] = useState({ userId: '', newPassword: '' });
 
@@ -130,11 +142,9 @@ const AdminDashboard: React.FC = () => {
                     {/* Make Admin / Remove Admin button */}
                     <button
                       onClick={() => changeRole(user.id, user.isAdmin)}
-                      className={`${
-                        user.isAdmin ? 'bg-red-500' : 'bg-yellow-500'
-                      } text-white px-4 py-2 rounded shadow-md hover:${
-                        user.isAdmin ? 'bg-red-600' : 'bg-yellow-600'
-                      }`}
+                      className={`${user.isAdmin ? 'bg-red-500' : 'bg-yellow-500'
+                        } text-white px-4 py-2 rounded shadow-md hover:${user.isAdmin ? 'bg-red-600' : 'bg-yellow-600'
+                        }`}
                     >
                       {user.isAdmin ? 'Remove Admin' : 'Make Admin'}
                     </button>

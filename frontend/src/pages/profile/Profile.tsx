@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { fetchUserById, User } from '../../services/userService';
 import { fetchPostsByAuthorId, Post } from '../../services/postService';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Profile: React.FC = () => {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        const isAdmin = localStorage.getItem("isAdmin");
+
+        if (!token || isAdmin !== "false") {
+            navigate("/");
+        }
+    }, [navigate]);
+
     const [user, setUser] = useState<User | null>(null);
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
