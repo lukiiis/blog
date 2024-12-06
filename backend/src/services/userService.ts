@@ -72,3 +72,60 @@ export async function deleteUser(userId: ObjectId): Promise<boolean> {
     throw error;
   }
 }
+
+export async function blockUser(userId: ObjectId): Promise<UserDto | null> {
+  try {
+    const user = await db.collection<User>("User").findOneAndUpdate(
+      { _id: userId },
+      { $set: { isBlocked: true } },
+      { returnDocument: "after" }
+    );
+    return user ? mapUserToDto(user) : null;
+  } catch (error) {
+    console.error("Error blocking user:", error);
+    throw error;
+  }
+}
+
+export async function unblockUser(userId: ObjectId): Promise<UserDto | null> {
+  try {
+    const user = await db.collection<User>("User").findOneAndUpdate(
+      { _id: userId },
+      { $set: { isBlocked: false } },
+      { returnDocument: "after" }
+    );
+    return user ? mapUserToDto(user) : null;
+  } catch (error) {
+    console.error("Error unblocking user:", error);
+    throw error;
+  }
+}
+
+export async function changeUserPassword(userId: ObjectId, newPassword: string): Promise<UserDto | null> {
+  console.log(newPassword);
+  try {
+    const user = await db.collection<User>("User").findOneAndUpdate(
+      { _id: userId },
+      { $set: { password: newPassword } },
+      { returnDocument: "after" }
+    );
+    return user ? mapUserToDto(user) : null;
+  } catch (error) {
+    console.error("Error changing user password:", error);
+    throw error;
+  }
+}
+
+export async function changeUserRole(userId: ObjectId, isAdmin: boolean): Promise<UserDto | null> {
+  try {
+    const user = await db.collection<User>("User").findOneAndUpdate(
+      { _id: userId },
+      { $set: { isAdmin: isAdmin } },
+      { returnDocument: "after" }
+    );
+    return user ? mapUserToDto(user) : null;
+  } catch (error) {
+    console.error("Error changing user role:", error);
+    throw error;
+  }
+}

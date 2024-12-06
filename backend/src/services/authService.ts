@@ -27,6 +27,7 @@ export async function registerUser(req: RegisterRequestDto) {
     profilePicture: req.profilePicture,
     createdAt: new Date(),
     updatedAt: new Date(),
+    isBlocked: false,
     isAdmin: false,
     isActive: true
   }

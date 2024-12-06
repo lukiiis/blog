@@ -10,6 +10,7 @@ export function mapUserToDto(user: User): UserDto {
     profilePicture: user.profilePicture,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
+    isBlocked: user.isBlocked,
     isAdmin: user.isAdmin,
     isActive: user.isActive
   };

@@ -10,6 +10,7 @@ export interface UserDto {
     createdAt: Date;
     updatedAt: Date,
     isAdmin: boolean;
+    isBlocked: boolean;
     isActive: boolean;
 }
 
