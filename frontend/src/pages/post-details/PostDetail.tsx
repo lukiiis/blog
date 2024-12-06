@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Post } from '../../services/postService';
-import { fetchPostById, fetchCommentsByPostId, fetchLikesByPostId, addLike, removeLike, addComment, deleteComment } from '../post-details/postDetailService';
+import {
+    addComment,
+    addLike,
+    deleteComment,
+    fetchCommentsByPostId,
+    fetchLikesByPostId,
+    fetchPostById,
+    removeLike
+} from './postDetailService.tsx';
 import { Comment } from '../../services/commentService';
 import { Like } from '../../services/likeService';
 
@@ -105,7 +113,7 @@ const PostDetail: React.FC = () => {
     const userLike = likes.find(like => like.userId === userId);
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md w-full mx-auto max-w-2xl text-black">
+        <div className="bg-white p-6 rounded-lg shadow-md w-full mx-auto max-w-2xl text-black mt-5 mb-16">
             <h2 className="text-2xl font-bold mb-4 text-center text-black">{post?.title}</h2>
             <p className="text-gray-800 mb-4 break-words">{post?.content}</p>
             <p className="text-gray-800"><strong>Author:</strong> {post?.username}</p>
