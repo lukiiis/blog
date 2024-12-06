@@ -27,13 +27,14 @@ const Layout: React.FC = () => {
                         {token ? (
                             isAdmin === "true" ? (
                                 <>
-                                    <Link to="/admin-dashboard" className="text-white">Admin</Link>
+                                    <Link to="/create-post" className="text-white">Create Post</Link>
+                                    <Link to="/admin-dashboard" className="text-white">Admin Dashboard</Link>
                                     <button onClick={handleLogout} className="text-white">Logout</button>
                                 </>
                             ) : (
                                 <>
-                                    <Link to="/profile" className="text-white">Profile</Link>
                                     <Link to="/create-post" className="text-white">Create Post</Link>
+                                    <Link to="/profile" className="text-white">Profile</Link>
                                     <button onClick={handleLogout} className="text-white">Logout</button>
                                 </>
                             )

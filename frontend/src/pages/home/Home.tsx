@@ -18,8 +18,7 @@ const Home: React.FC = () => {
     }
 
     return (
-
-        <section className="bg-white p-6 rounded-lg shadow-md w-full mx-auto max-w-2xl">
+        <section className="bg-white p-6 rounded-lg shadow-md w-full mx-auto max-w-2xl mt-5 mb-20">
             <h2 className="text-black text-2xl font-bold mb-4 text-center">Latest Posts</h2>
             <div className="space-y-4">
                 {posts?.map((post: Post) => (
@@ -27,7 +26,9 @@ const Home: React.FC = () => {
                         <h3 className="text-xl font-semibold text-black">
                             <Link to={`/post/${post.id}`}>{post.title}</Link>
                         </h3>
-                        <p className="text-gray-700 break-words">{post.content}</p>
+                        <p className="text-gray-700 max-h-[50px] whitespace-nowrap overflow-hidden text-ellipsis">
+                            {post.content}
+                        </p>
                     </article>
                 ))}
             </div>

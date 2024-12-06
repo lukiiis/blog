@@ -60,8 +60,8 @@ const CreatePost: React.FC = () => {
     };
 
     return (
-        <div className="bg-gray-100 flex flex-col items-center justify-center" style={{ height: 'calc(100vh - 64px - 64px)' }}>
-            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+        <div className="bg-gray-100 flex flex-col items-center justify-center overflow-auto" style={{ height: 'calc(100vh - 64px - 64px)' }}>
+            <div className="bg-white p-6 rounded-lg shadow-md max-w-md min-w-[700px]">
                 <h1 className="text-2xl font-bold mb-4 text-center text-black">Create Post</h1>
                 {showErrorPopup && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -97,7 +97,7 @@ const CreatePost: React.FC = () => {
                         <textarea
                             id="content"
                             {...register('content', { required: 'Content is required' })}
-                            className="w-full p-2 border border-gray-300 rounded mt-1 text-black"
+                            className="w-full p-2 border border-gray-300 rounded mt-1 text-black h-[20vh]"
                         />
                         {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
                     </div>
